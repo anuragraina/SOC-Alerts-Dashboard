@@ -243,9 +243,11 @@ const insertMany = db.transaction(() => {
     const assignee = Math.random() < 0.7 ? null : ANALYST_EMAIL;
 
     const createdAt = pickCreatedAt();
-    const updatedAt = new Date(
-      createdAt.getTime() + faker.number.int({ min: 0, max: 2 * 24 * 60 * 60 * 1000 })
-    );
+    const updatedAt = status === 'new'
+      ? null
+      : new Date(
+          createdAt.getTime() + faker.number.int({ min: 0, max: 2 * 24 * 60 * 60 * 1000 })
+        );
 
     const title = faker.helpers.arrayElement(TITLES[category]);
     const description = faker.helpers.arrayElement(DESCRIPTIONS[category]);
@@ -263,7 +265,7 @@ const insertMany = db.transaction(() => {
       description,
       rawEvent,
       createdAt.toISOString(),
-      updatedAt.toISOString()
+      updatedAt?.toISOString() ?? null
     );
   }
 });

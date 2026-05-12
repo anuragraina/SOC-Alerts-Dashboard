@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS alerts (
   description TEXT NOT NULL,
   raw_event TEXT NOT NULL,
   created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  updated_at TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_alerts_severity ON alerts(severity);
