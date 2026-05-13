@@ -48,6 +48,7 @@ type FilterValueMap = {
 
 type FilterKey = keyof FilterValueMap;
 
+// Comma-separated URL param -> typed array, dropping any unknown values.
 function parseMultiSelectParam<T extends string>(
   rawValue: unknown,
   allowedValues: readonly T[],
@@ -80,15 +81,18 @@ function sortToApi(sort: AlertSort): {
     case 'oldest':
       return { sortBy: 'created_at', sortDir: 'asc' };
     case 'severity_desc':
-      return { sortBy: 'severity', sortDir: 'desc' };
-    case 'severity_asc':
+      // Backend ranks critical=1 … info=5, so ASC = highest severity first.
       return { sortBy: 'severity', sortDir: 'asc' };
+    case 'severity_asc':
+      return { sortBy: 'severity', sortDir: 'desc' };
     case 'newest':
     default:
       return { sortBy: 'created_at', sortDir: 'desc' };
   }
 }
 
+// URL search params are the single source of truth for list filters so that
+// links / refresh / back-forward all restore the same view.
 export function useAlerts() {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -109,6 +113,7 @@ export function useAlerts() {
   function setFilter<K extends FilterKey>(key: K, value: FilterValueMap[K]) {
     const next = new URLSearchParams(searchParams);
 
+    // Default/empty values are dropped from the URL to keep it clean.
     if (Array.isArray(value)) {
       const joined = (value as string[]).join(',');
       if (joined) next.set(key, joined);
@@ -122,6 +127,7 @@ export function useAlerts() {
       else next.set(key, str);
     }
 
+    // Any filter change (other than paging itself) sends the user back to page 1.
     if (key !== 'page') next.delete('page');
 
     setSearchParams(next, { replace: true });
@@ -145,6 +151,8 @@ export function useAlerts() {
     sortDir,
   };
 
+  // queryKey includes every filter so changes refetch automatically.
+  // keepPreviousData prevents the table from flashing empty between pages.
   const query = useQuery({
     queryKey: ['alerts', apiFilters],
     queryFn: () => getAlerts(apiFilters),
