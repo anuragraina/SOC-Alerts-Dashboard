@@ -1,6 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from 'react-hot-toast';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import AlertDetail from './pages/AlertDetail';
 import AlertsList from './pages/AlertsList';
 import Layout from './pages/Layout';
 import Login from './pages/Login';
@@ -30,11 +32,12 @@ function App() {
           >
             <Route path="/dashboard" element={<div>Dashboard</div>} />
             <Route path="/alerts" element={<AlertsList />} />
-            <Route path="/alerts/:id" element={<div>Alert Detail</div>} />
+            <Route path="/alerts/:id" element={<AlertDetail />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>
+      <Toaster position="top-right" />
     </QueryClientProvider>
   );
 }
