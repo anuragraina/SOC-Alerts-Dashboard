@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import AlertDetail from './pages/AlertDetail';
 import AlertsList from './pages/AlertsList';
+import Dashboard from './pages/Dashboard';
 import Layout from './pages/Layout';
 import Login from './pages/Login';
 
@@ -30,7 +31,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/dashboard" element={<div>Dashboard</div>} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/alerts" element={<AlertsList />} />
             <Route path="/alerts/:id" element={<AlertDetail />} />
           </Route>

@@ -64,6 +64,14 @@ export interface AlertFilters {
 }
 
 export interface AlertStats {
+  totals: {
+    total: number;
+    new: number;
+    investigating: number;
+    criticalNew: number;
+    last24h: number;
+    resolvedThisWeek: number;
+  };
   bySeverity: { key: Severity; count: number }[];
   byCategory: { key: Category; count: number }[];
   byStatus: { key: Status; count: number }[];

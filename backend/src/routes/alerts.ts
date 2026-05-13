@@ -147,10 +147,44 @@ router.get('/stats', (_req, res) => {
     )
     .all() as { key: string; count: number }[];
 
-  const today = new Date();
+  const now = new Date();
+  const today = new Date(now);
   today.setUTCHours(0, 0, 0, 0);
-  const start = new Date(today);
-  start.setUTCDate(start.getUTCDate() - 13);
+  const trendStart = new Date(today);
+  trendStart.setUTCDate(trendStart.getUTCDate() - 13);
+
+  const last24hCutoff = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const weekCutoff = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  // Single aggregate query for all scalar totals.
+  const totalsRow = db
+    .prepare(
+      `SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN status = 'new' THEN 1 ELSE 0 END) as new,
+        SUM(CASE WHEN status = 'investigating' THEN 1 ELSE 0 END) as investigating,
+        SUM(CASE WHEN status = 'new' AND severity = 'critical' THEN 1 ELSE 0 END) as criticalNew,
+        SUM(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as last24h,
+        SUM(CASE WHEN status = 'resolved' AND updated_at >= ? THEN 1 ELSE 0 END) as resolvedThisWeek
+      FROM alerts`,
+    )
+    .get(last24hCutoff.toISOString(), weekCutoff.toISOString()) as {
+    total: number;
+    new: number;
+    investigating: number;
+    criticalNew: number;
+    last24h: number;
+    resolvedThisWeek: number;
+  };
+
+  const totals = {
+    total: totalsRow.total ?? 0,
+    new: totalsRow.new ?? 0,
+    investigating: totalsRow.investigating ?? 0,
+    criticalNew: totalsRow.criticalNew ?? 0,
+    last24h: totalsRow.last24h ?? 0,
+    resolvedThisWeek: totalsRow.resolvedThisWeek ?? 0,
+  };
 
   const counts = db
     .prepare(
@@ -159,18 +193,18 @@ router.get('/stats', (_req, res) => {
        WHERE created_at >= ?
        GROUP BY date`,
     )
-    .all(start.toISOString()) as { date: string; count: number }[];
+    .all(trendStart.toISOString()) as { date: string; count: number }[];
 
   const countMap = new Map(counts.map((c) => [c.date, c.count]));
   const trend: { date: string; count: number }[] = [];
   for (let i = 0; i < 14; i++) {
-    const d = new Date(start);
-    d.setUTCDate(start.getUTCDate() + i);
+    const d = new Date(trendStart);
+    d.setUTCDate(trendStart.getUTCDate() + i);
     const key = d.toISOString().slice(0, 10);
     trend.push({ date: key, count: countMap.get(key) ?? 0 });
   }
 
-  res.json({ data: { bySeverity, byCategory, byStatus, trend } });
+  res.json({ data: { totals, bySeverity, byCategory, byStatus, trend } });
 });
 
 router.get('/:id', (req, res) => {
