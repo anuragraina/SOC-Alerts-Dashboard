@@ -35,13 +35,13 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+      <div className="w-full max-w-sm flex flex-col items-center bg-white rounded-lg shadow-sm border border-slate-200 p-6">
         <h1 className="text-xl font-semibold text-slate-900 mb-1">
           SOC Alerts Dashboard
         </h1>
         <p className="text-sm text-slate-500 mb-6">Sign in to continue</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 w-full">
           <div>
             <label
               htmlFor="email"
