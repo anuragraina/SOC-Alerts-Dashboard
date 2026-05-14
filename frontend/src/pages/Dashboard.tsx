@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CategoryChart } from '../components/dashboard/CategoryChart';
 import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton';
@@ -29,6 +30,11 @@ function SectionTitle({ children }: { children: string }) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { data: stats, isLoading, isError, refetch } = useAlertStats();
+
+  // Updates page title
+  useEffect(() => {
+    document.title = 'Dashboard · SOC Alerts';
+  }, []);
 
   if (isLoading) {
     return (

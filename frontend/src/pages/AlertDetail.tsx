@@ -113,6 +113,13 @@ export default function AlertDetail() {
     setAssigneeDraft(alert?.assignee ?? '');
   }, [alert?.assignee]);
 
+  // Updates page title
+  useEffect(() => {
+    document.title = alert?.title
+      ? `${alert.title} · SOC Alerts`
+      : 'Alert · SOC Alerts';
+  }, [alert?.title]);
+
   function goBack() {
     // Prefer browser back so the previous filter params on /alerts are preserved.
     if (window.history.length > 1) navigate(-1);

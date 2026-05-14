@@ -87,6 +87,11 @@ export default function AlertsList() {
   const { data, isLoading, isError, filters, setFilter, clearFilters } =
     useAlerts();
 
+  // Updates page title
+  useEffect(() => {
+    document.title = 'Alerts · SOC Alerts';
+  }, []);
+
   // Local mirror of the URL search param so typing feels instant; we only push
   // to the URL (and trigger a refetch) after the user pauses for 300ms.
   const [searchInput, setSearchInput] = useState(filters.search);
