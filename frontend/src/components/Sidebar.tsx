@@ -52,7 +52,7 @@ export function Sidebar() {
           <button
             type="button"
             onClick={handleLogout}
-            className="w-full text-left text-sm font-medium text-slate-300 hover:text-white"
+            className="w-full text-left cursor-pointer text-sm font-medium text-slate-300 hover:text-white"
           >
             Sign out
           </button>

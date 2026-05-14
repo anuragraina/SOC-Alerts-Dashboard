@@ -95,15 +95,11 @@ export default function Login() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-2 px-3 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
+            className="w-full mt-1 py-2 px-3 cursor-pointer rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
             {submitting ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
-
-        <p className="mt-6 text-xs text-slate-500 text-center">
-          Demo: analyst@soc.local / analyst123
-        </p>
       </div>
     </div>
   );
