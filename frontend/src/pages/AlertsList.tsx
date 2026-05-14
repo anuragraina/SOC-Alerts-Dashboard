@@ -330,6 +330,15 @@ export default function AlertsList() {
             <Button
               variant="secondary"
               size="sm"
+              onClick={() => setFilter('page', 1)}
+              disabled={page <= 1 || isLoading}
+              aria-label="First page"
+            >
+              «
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={() => setFilter('page', page - 1)}
               disabled={page <= 1 || isLoading}
             >
@@ -345,6 +354,15 @@ export default function AlertsList() {
               disabled={page >= totalPages || isLoading}
             >
               Next
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setFilter('page', totalPages)}
+              disabled={page >= totalPages || isLoading}
+              aria-label="Last page"
+            >
+              »
             </Button>
           </div>
         </div>
