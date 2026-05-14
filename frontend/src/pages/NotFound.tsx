@@ -1,10 +1,15 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import { useAuthStore } from '../store/auth';
 
 export default function NotFound() {
+  const token = useAuthStore((s) => s.token);
+
   useEffect(() => {
     document.title = 'Page not found · SOC Alerts';
   }, []);
+
+  if (!token) return <Navigate to="/login" replace />;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { login as loginRequest } from '../api/client';
 import { useAuthStore } from '../store/auth';
 
 export default function Login() {
   const navigate = useNavigate();
+  const token = useAuthStore((s) => s.token);
   const setAuth = useAuthStore((s) => s.login);
 
   const [email, setEmail] = useState('');
@@ -18,6 +19,8 @@ export default function Login() {
   useEffect(() => {
     document.title = 'Sign in · SOC Alerts';
   }, []);
+
+  if (token) return <Navigate to="/dashboard" replace />;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
